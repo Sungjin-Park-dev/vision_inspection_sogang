@@ -23,11 +23,6 @@ Usage:
     - Input:  data/{object}/viewpoint/{num_viewpoints}/viewpoints.h5
     - Output: data/{object}/trajectory/{num_viewpoints}/trajectory.csv
     - Mesh:   data/{object}/mesh/source.obj
-
-Design principles:
-- Self-contained (no dependency on old common/ modules)
-- Educational code structure with clear sections
-- Minimal but complete functionality
 """
 
 # ============================================================================
@@ -79,14 +74,9 @@ try:
 except ImportError:
     OPEN3D_AVAILABLE = False
 
-# Import configuration from new_common
+# Import configuration from common
 sys.path.insert(0, str(Path(__file__).parent.parent))
-from new_common import config
-
-# GTSP optimization defaults (not in config)
-DEFAULT_KNN = 10
-
-DEFAULT_LAMBDA_ROT = 1.0
+from common import config
 
 # EAIK transformation constant
 CUROBO_TO_EAIK_TOOL = np.array(
@@ -1241,14 +1231,14 @@ def main():
     parser.add_argument(
         "--knn",
         type=int,
-        default=DEFAULT_KNN,
-        help=f"Number of nearest neighbors (default: {DEFAULT_KNN})"
+        default=config.DEFAULT_KNN,
+        help=f"Number of nearest neighbors (default: {config.DEFAULT_KNN})"
     )
     parser.add_argument(
         "--lambda-rot",
         type=float,
-        default=DEFAULT_LAMBDA_ROT,
-        help=f"Rotation cost weight (default: {DEFAULT_LAMBDA_ROT})"
+        default=config.DEFAULT_LAMBDA_ROT,
+        help=f"Rotation cost weight (default: {config.DEFAULT_LAMBDA_ROT})"
     )
     parser.add_argument(
         "--visualize",
@@ -1360,9 +1350,6 @@ def main():
     ik_config = IKSolverConfig.load_from_robot_config(
         robot_cfg,
         world_cfg,
-        rotation_threshold=config.IK_ROTATION_THRESHOLD,
-        position_threshold=config.IK_POSITION_THRESHOLD,
-        num_seeds=config.IK_NUM_SEEDS,
         self_collision_check=True,
         collision_checker_type=CollisionCheckerType.MESH,
         tensor_args=tensor_args,

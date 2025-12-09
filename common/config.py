@@ -68,24 +68,27 @@ ROBOT_MOUNT_DIMENSIONS = np.array([0.3, 0.3, 0.5], dtype=np.float64)
 # ============================================================================
 
 DEFAULT_ROBOT_CONFIG = "ur20.yml"
-DEFAULT_URDF_PATH = "/isaac-sim/curobo/src/curobo/content/assets/robot/ur_description/ur20.urdf"
+DEFAULT_URDF_PATH = "/curobo/src/curobo/content/assets/robot/ur_description/ur20.urdf"
 
 
 # ============================================================================
 # IK Solver Parameters
 # ============================================================================
 
-IK_ROTATION_THRESHOLD = 0.05  # radians
-IK_POSITION_THRESHOLD = 0.005  # meters
 IK_NUM_SEEDS = 32
 
+# ============================================================================
+# GTSP optimization defaults (not in config)
+# ============================================================================
+DEFAULT_KNN = 10
+DEFAULT_LAMBDA_ROT = 1.0
 
 # ============================================================================
 # Collision Checking Parameters
 # ============================================================================
 
 COLLISION_MARGIN = 0.0
-COLLISION_ADAPTIVE_MAX_JOINT_STEP_DEG = 1.0
+COLLISION_ADAPTIVE_MAX_JOINT_STEP_DEG = 0.1
 COLLISION_INTERP_EXCLUDE_LAST_JOINT = True
 
 

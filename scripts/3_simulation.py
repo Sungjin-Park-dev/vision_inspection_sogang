@@ -1,22 +1,12 @@
 #!/usr/bin/env python3
 """
-Simulate Robot Trajectory in Isaac Sim - Educational Script
-
 This script executes a pre-computed collision-free trajectory in Isaac Sim.
-Part of the vision inspection pipeline simplification project.
 
 Usage:
-    /isaac-sim/python.sh new_scripts/3_simulation.py \\
-        --object sample \\
-        --num_viewpoints 163 \\
+    /isaac-sim/python.sh new_scripts/3_simulation.py \
+        --object sample \
+        --num_viewpoints 163 \
         --visualize_spheres
-
-Features:
-- 100% self-contained (no common/ dependencies)
-- Uses only new_common/config.py for configuration
-- Direct waypoint execution (trajectory pre-interpolated)
-- Optional robot sphere visualization
-- Optional debug mode for target positions
 """
 
 # ============================================================================
@@ -86,8 +76,8 @@ parser.add_argument(
 parser.add_argument(
     "--robot",
     type=str,
-    default="ur20_safe.yml",
-    help="Robot configuration file (default: ur20_safe.yml)"
+    default="ur20.yml",
+    help="Robot configuration file (default: ur20.yml)"
 )
 
 parser.add_argument(
@@ -179,9 +169,9 @@ from curobo.util_file import (
 from curobo.wrap.reacher.ik_solver import IKSolver, IKSolverConfig
 
 # ============================================================================
-# Local Imports (ONLY new_common/config)
+# Local Imports
 # ============================================================================
-import new_common.config as config
+import common.config as config
 
 
 # ============================================================================

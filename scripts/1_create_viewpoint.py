@@ -9,7 +9,11 @@ Simplified unified script combining:
 Input: Multi-material OBJ file + material RGB color
 Output: HDF5 file with surface positions and normals
 
-omni_python new_scripts/1_create_viewpoint.py --object sample --material-rgb "170,163,158" --visualize
+Usage:
+    /isaac-sim/python.sh new_scripts/1_create_viewpoint.py \
+    --object sample \
+    --material-rgb "170,163,158" \
+    --visualize
 """
 
 import os
@@ -26,7 +30,7 @@ import h5py
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent.parent))
-from new_common import config
+from common import config
 
 
 # ============================================================================
@@ -341,7 +345,7 @@ def sample_viewpoints_poisson(
 
 
 # ============================================================================
-# HDF5 I/O Functions (from common/data_io.py)
+# HDF5 I/O Functions
 # ============================================================================
 
 def save_viewpoints_hdf5(
