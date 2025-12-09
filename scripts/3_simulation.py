@@ -826,8 +826,6 @@ def setup_collision_checker(
     ik_config = IKSolverConfig.load_from_robot_config(
         robot_cfg,
         world_cfg,
-        rotation_threshold=config.IK_ROTATION_THRESHOLD,
-        position_threshold=config.IK_POSITION_THRESHOLD,
         num_seeds=config.IK_NUM_SEEDS,
         self_collision_check=False,
         self_collision_opt=False,

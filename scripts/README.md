@@ -30,19 +30,19 @@
 
 ```bash
 # 1단계: 뷰포인트 생성 (개수 자동 계산)
-/isaac-sim/python.sh new_scripts/1_create_viewpoint.py \
+/isaac-sim/python.sh scripts/1_create_viewpoint.py \
     --object sample \
     --material-rgb "170,163,158"
 # 출력: data/sample/viewpoint/163/viewpoints.h5
 
 # 2단계: 궤적 생성
-/isaac-sim/python.sh new_scripts/2_generate_trajectory.py \
+/isaac-sim/python.sh scripts/2_generate_trajectory.py \
     --object sample \
     --num_viewpoints 163
 # 출력: data/sample/trajectory/163/trajectory.csv
 
 # 3단계: 시뮬레이션
-/isaac-sim/python.sh new_scripts/3_simulation.py \
+/isaac-sim/python.sh scripts/3_simulation.py \
     --object sample \
     --num_viewpoints 163 \
     --visualize_spheres
