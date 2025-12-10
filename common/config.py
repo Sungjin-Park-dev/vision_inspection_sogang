@@ -33,13 +33,22 @@ CAMERA_OVERLAP_RATIO = 0.5
 # ============================================================================
 
 # Target object position in world frame (x, y, z)
-TARGET_OBJECT_POSITION = np.array([1.00, 0.0, -0.172], dtype=np.float64)
+# Table 630mm 기준:
+TARGET_OBJECT_POSITION = np.array([1.00, 0.0, -0.175], dtype=np.float64)
+
+# Table 730mm 기준:
+# TARGET_OBJECT_POSITION = np.array([1.00, 0.0, -0.075], dtype=np.float64)
 
 # Target object orientation in world frame (quaternion: w, x, y, z)
+# orientation은 우리가 정하면 되고,
 TARGET_OBJECT_ROTATION = np.array([1.0, 0.0, 0.0, 0.0], dtype=np.float64)
 
 # Table cuboid position in world frame (x, y, z)
+# Table 630 mm 기준: 630 - 805 = -175 = 250 - 425
 TABLE_POSITION = np.array([1.0, 0.0, -0.425], dtype=np.float64)
+
+# Table 730mm 기준: 730 - 805 = -75 = 250 - 325
+# TABLE_POSITION = np.array([1.0, 0.0, -0.325], dtype=np.float64)
 
 # Table cuboid dimensions (x, y, z) in meters
 TABLE_DIMENSIONS = np.array([0.6, 1.0, 0.5], dtype=np.float64)
