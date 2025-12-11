@@ -24,3 +24,5 @@ docker run --name isaac-sim --entrypoint bash -it --runtime=nvidia --gpus all -e
     -v ~/docker/isaac-sim/documents:/root/Documents:rw \
     lg-vision:v1.0
 ```
+
+4. Moveit2 Docker 설치
