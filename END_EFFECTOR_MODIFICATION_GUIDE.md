@@ -753,3 +753,121 @@ python scripts/2_generate_trajectory.py \
 ---
 
 **마지막 업데이트**: 2025-12-11
+
+  결론: 동일한 방향이면 변경 불필요
+
+  CUROBO_TO_EAIK_TOOL은 바꾸지 않아도 됩니다 (대부분의 경우)
+
+  이유 설명
+
+  1. CUROBO_TO_EAIK_TOOL의 역할
+
+  # Line 82-90
+  CUROBO_TO_EAIK_TOOL = np.array(
+      [
+          [-1.0, 0.0, 0.0, 0.0],  # Rotation part
+          [0.0, 0.0, 1.0, 0.0],   # Rotation part
+          [0.0, 1.0, 0.0, 0.0],   # Rotation part
+          [0.0, 0.0, 0.0, 1.0],   # Homogeneous coordinate
+      ],
+      dtype=np.float64,
+  )
+
+  이것은 좌표계 변환 매트릭스입니다:
+  - CuRobo의 tool frame → EAIK의 tool frame 변환
+  - Rotation만 변환 (Translation은 모두 0)
+  - IK 계산 시 사용 (Line 452)
+
+  2. URDF의 tool0 frame
+
+  <!-- Line 352-358: ROS-Industrial 'tool0' frame -->
+  <joint name="flange-tool0" type="fixed">
+      <!-- default toolframe: X+ left, Y+ up, Z+ front -->
+      <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0 
+  0 0"/>
+      <parent link="flange"/>
+      <child link="tool0"/>
+  </joint>
+
+  기존 tool0의 방향:
+  - X+ left
+  - Y+ up
+  - Z+ front
+
+  3. End-effector를 동일한 방향으로 추가하는 경우
+
+  <!-- 예시: End-effector 추가 -->
+  <link name="end_effector_link"/>
+  <joint name="tool0-end_effector" type="fixed">
+      <!-- tool0와 동일한 orientation, Z축으로만 연장 -->
+      <origin rpy="0 0 0" xyz="0 0 0.15"/>  <!-- ← 동일 방향, Z만 
+  이동 -->
+      <parent link="tool0"/>
+      <child link="end_effector_link"/>
+  </joint>
+
+  이 경우:
+  - ✅ Rotation: 변화 없음 (rpy="0 0 0")
+  - ✅ Translation: Z축으로만 0.15m 이동
+  - ✅ CUROBO_TO_EAIK_TOOL: 변경 불필요!
+
+  4. 왜 Translation은 추가 안 해도 되나?
+
+  # Line 450-453
+  curobo_to_eaik_tool = CUROBO_TO_EAIK_TOOL.astype(mats_np.dtype,
+  copy=False)
+  mats_eaik = mats_np @ curobo_to_eaik_tool
+
+  IK 계산 시:
+  1. CuRobo가 target pose를 계산 (이미 URDF 기반, end-effector 길이
+   포함)
+  2. CUROBO_TO_EAIK_TOOL로 좌표계만 변환
+  3. EAIK가 IK 계산 (역시 URDF 기반)
+
+  → End-effector 길이는 URDF에서 이미 처리되므로, 변환 매트릭스에 
+  추가 불필요
+
+  변경이 필요한 경우 ⚠️
+
+  Rotation이 다른 경우만 변경 필요:
+
+  예시 1: 카메라를 90도 회전해서 장착
+
+  <joint name="tool0-camera" type="fixed">
+      <!-- 카메라를 Y축으로 90도 회전 -->
+      <origin rpy="0 1.5707963267948966 0" xyz="0 0 0.15"/>
+      <parent link="tool0"/>
+      <child link="camera_link"/>
+  </joint>
+
+  이 경우:
+  # CUROBO_TO_EAIK_TOOL 수정 필요
+  # Y축 90도 회전을 반영해야 함
+
+  예시 2: 기존과 동일 (변경 불필요)
+
+  <joint name="tool0-camera" type="fixed">
+      <!-- tool0와 동일한 방향 -->
+      <origin rpy="0 0 0" xyz="0 0 0.15"/>
+      <parent link="tool0"/>
+      <child link="camera_link"/>
+  </joint>
+
+  이 경우:
+  # CUROBO_TO_EAIK_TOOL 변경 불필요 ✅
+  # 기존 값 그대로 사용
+
+  요약
+
+  | End-effector 방향            | CUROBO_TO_EAIK_TOOL 수정 필요
+  여부 |
+  |----------------------------|------------------------------|
+  | tool0와 동일 방향(rpy="0 0 0")  | ❌ 불필요
+      |
+  | tool0 대비 회전(rpy ≠ "0 0 0") | ✅ 필요
+    |
+  | Z축 이동만(xyz="0 0 0.15")     | ❌ 불필요 (URDF에서 처리)
+         |
+
+  결론: 대부분의 경우 (단순 카메라 마운트 등) 변경하지 않아도 
+  됩니다! 🎉
